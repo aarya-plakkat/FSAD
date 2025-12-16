@@ -1,0 +1,19 @@
+.container {
+  width: 600px;
+  margin: auto;
+  padding: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+}
+
+button {
+  margin-right: 5px;
+}
