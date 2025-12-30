@@ -1,0 +1,146 @@
+//start the shelll
+mongosh
+//create or use a db
+use companyDB
+//isert sample data
+db.employees.insertMany([
+  {
+    employee_id: 101,
+    name: "Sonia Rao",
+    department: "Engineering",
+    salary: 95000,
+    hire_date: new Date("2023-01-15"),
+    performance_score: 4.5,
+    status: "Active"
+  },
+  {
+    employee_id: 102,
+    name: "Rajesh Kumar",
+    department: "HR",
+    salary: 68000,
+    hire_date: new Date("2024-03-22"),
+    performance_score: 4.1,
+    status: "Active"
+  },
+  {
+    employee_id: 103,
+    name: "Arjun Singh",
+    department: "Engineering",
+    salary: 120000,
+    hire_date: new Date("2022-06-01"),
+    performance_score: 4.8,
+    status: "Active"
+  },
+  {
+    employee_id: 104,
+    name: "Priya Mehta",
+    department: "Sales",
+    salary: 85000,
+    hire_date: new Date("2023-11-10"),
+    performance_score: 4.2,
+    status: "Active"
+  },
+  {
+    employee_id: 105,
+    name: "Vikram Reddy",
+    department: "Sales",
+    salary: 35000,
+    hire_date: new Date("2024-08-01"),
+    status: "On Leave"
+  }
+])
+//query 1
+db.employees.find({
+  salary: { $gt: 90000, $lte: 120000 }
+})
+
+//query 2
+db.employees.find({
+  department: { $in: ["HR", "Sales"] }
+})
+
+//query 3
+db.employees.find({
+  status: { $ne: "On Leave" }
+})
+
+//query 4
+db.employees.find({
+  department: "Engineering",
+  performance_score: { $gte: 4.5 }
+})
+
+//query 5
+db.employees.find({
+  $or: [
+    { department: "HR" },
+    { salary: { $gt: 100000 } }
+  ]
+})
+
+//query 6
+db.employees.find({
+  status: "Active",
+  department: { $in: ["Engineering", "Sales"] },
+  hire_date: { $lt: new Date("2024-01-01") }
+})
+
+
+
+
+
+program 8
+
+//cretae or use the dbuse catalogDB
+use catalogDB
+//insert sample data
+db.catalog.insertMany([
+  {
+    item_id: "A001",
+    name: "Classic Leather Backpack",
+    description: "Durable leather backpack with multiple compartments, perfect for daily commute or light travel.",
+    tags: ["leather", "backpack", "travel", "work"],
+    price: 120,
+    in_stock: true
+  },
+  {
+    item_id: "A002",
+    name: "Ergonomic Office Chair",
+    description: "Adjustable office chair with lumbar support and breathable mesh, ideal for long working hours.",
+    tags: ["office", "chair", "ergonomic", "comfort"],
+    price: 280,
+    in_stock: false
+  },
+  {
+    item_id: "A003",
+    name: "Durable Cotton T-Shirt",
+    description: "A soft and durable t-shirt made from 100% organic cotton. Eco-friendly and comfortable.",
+    tags: ["cotton", "tshirt", "organic", "eco-friendly"],
+    price: 25,
+    in_stock: true
+  }
+])
+
+//create text index
+db.catalog.createIndex({
+  name: "text",
+  description: "text",
+  tags: "text"
+})
+
+//aggretion pipeline
+db.catalog.aggregate([
+  {
+    $match: {
+      $text: { $search: "durable backpack" }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      name: 1,
+      price: 1,
+      score: { $meta: "textScore" }
+    }
+  }
+])
